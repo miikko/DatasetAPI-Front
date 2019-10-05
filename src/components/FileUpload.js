@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import DropZone from './Dropzone'
 import ProgressBar from './ProgressBar'
-import fileUploadService from '../services/fileUpload'
 import '../stylesheets/FileUpload.css'
 
 const FileUpload = (props) => {
@@ -40,6 +39,7 @@ const FileUpload = (props) => {
     setUploadSuccessfull(false)
   }
 
+  //Ask for dataset name before sending
   const sendRequest = (file) => {
     return new Promise((resolve, reject) => {
      const req = new XMLHttpRequest();
@@ -81,22 +81,7 @@ const FileUpload = (props) => {
     setUploadProgresses({})
     setUploading(true)
     const promises = []
-    files.forEach(file => {
-      /*
-      const config = {
-        onUploadProgress: event => {
-          const copy = { ...uploadProgresses }
-          copy[file.name] = {
-            state: 'pending',
-            percentage: (event.loaded / event.total) * 100
-          }
-          setUploadProgresses(copy)
-        }
-      }
-      promises.push(fileUploadService.send(file, config))
-      */
-      promises.push(sendRequest(file))
-    }) 
+    files.forEach(file => { promises.push(sendRequest(file)) }) 
     try {
       await Promise.all(promises)
     } catch (error) {
