@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import datasetsService from '../services/datasets'
+import fileDownload from 'js-file-download'
 
 const FileDownload = (props) => {
   const [id, setId] = useState('')
@@ -12,19 +13,15 @@ const FileDownload = (props) => {
 
   const getFile = async (event) => {
     event.preventDefault()
-    try {
-      //BACKUP: 'Content-Type': `text/${fileFormat}`,
-      const config = {
-        headers: {
-          'Content-Type': `text/plain`,
-          'Content-Disposition': `attachment; filename="test.${fileFormat}"`
-        }
+    if (id && fileFormat) {
+      try {
+        const res = await datasetsService.getOne(id, fileFormat)
+        const name = datasets.find(dataset => dataset.id === id).name
+        fileDownload(fileFormat === 'json' ? JSON.stringify(res.data) : res.data, `${name}.${fileFormat}`)
+        setId('')
+      } catch (exception) {
+        console.log(exception.response || exception)
       }
-      const data = await datasetsService.getOne(id)
-      console.log(data)
-      setId('')
-    } catch (exception) {
-      console.log(exception.response || exception)
     }
   }
 
@@ -41,17 +38,10 @@ const FileDownload = (props) => {
     <div>
       <form onSubmit={getFile}>
         <select
-          value={fileFormat}
-          onChange={(event) => setFileFormat(event.target.value)}
-        >
-          <option value='arff'>.arff file</option>
-          <option value='csv'>.csv file</option>
-          <option value='json'>.json file</option>
-        </select>
-        <select
           value={id}
           onChange={(event) => setId(event.target.value)}
         >
+          <option value=''>Select dataset</option>
           {datasets.map(dataset =>
             <option
               value={dataset.id}
@@ -60,6 +50,15 @@ const FileDownload = (props) => {
               {dataset.name}
             </option>
           )}
+        </select>
+        <select
+          value={fileFormat}
+          onChange={(event) => setFileFormat(event.target.value)}
+        >
+          <option value=''>Select file-extension</option>
+          <option value='arff'>.arff file</option>
+          <option value='csv'>.csv file</option>
+          <option value='json'>.json file</option>
         </select>
         <button type='submit'>Download</button>
       </form>

@@ -39,7 +39,6 @@ const FileUpload = (props) => {
     setUploadSuccessfull(false)
   }
 
-  //Ask for dataset name before sending
   const sendRequest = (file) => {
     return new Promise((resolve, reject) => {
      const req = new XMLHttpRequest();

@@ -7,9 +7,9 @@ const getAll = async () => {
   return res.data
 }
 
-const getOne = async (id, config) => {
-  const res = await axios.get(`${baseUrl}/${id}`, config)
-  return res.data
+const getOne = async (id, fileFormat, config) => {
+  const res = await axios.get(`${baseUrl}/${id}/${fileFormat}`, config)
+  return res
 }
 
 const remove = async (id) => {
