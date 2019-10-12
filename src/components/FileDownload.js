@@ -1,15 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { connect } from 'react-redux'
 import datasetsService from '../services/datasets'
 import fileDownload from 'js-file-download'
 
-const FileDownload = (props) => {
+const FileDownload = ({ datasets }) => {
   const [id, setId] = useState('')
-  const [datasets, setDatasets] = useState([])
   const [fileFormat, setFileFormat] = useState('')
-
-  useEffect(() => {
-    getAllDatasets()
-  }, [])
 
   const getFile = async (event) => {
     event.preventDefault()
@@ -22,15 +18,6 @@ const FileDownload = (props) => {
       } catch (exception) {
         console.log(exception.response || exception)
       }
-    }
-  }
-
-  const getAllDatasets = async () => {
-    try {
-      const allDatasets = await datasetsService.getAll()
-      setDatasets(allDatasets)
-    } catch (exception) {
-      console.log(exception.response || exception)
     }
   }
 
@@ -62,9 +49,15 @@ const FileDownload = (props) => {
         </select>
         <button type='submit'>Download</button>
       </form>
-      <button onClick={getAllDatasets}>Get All</button>
+      
     </div>
   )
 }
 
-export default FileDownload
+const mapStateToProps = (state) => {
+  return {
+    datasets: state.datasets
+  }
+}
+
+export default connect(mapStateToProps)(FileDownload)
