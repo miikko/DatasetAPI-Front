@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
-import { login } from '../reducers/userReducer'
+import { registerUser } from '../reducers/userReducer'
 import { connect } from 'react-redux'
 
-const Login = (props) => {
+const Register = ({ registerUser }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const handleLogin = (event) => {
+  const handleRegister = (event) => {
     event.preventDefault()
     const user = { username, password }
-    props.login(user)
+    registerUser(user)
     setUsername('')
     setPassword('')
   }
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleRegister}>
       <div>
         <input
           type='text'
@@ -30,9 +30,9 @@ const Login = (props) => {
           onChange={(event) => setPassword(event.target.value)}
         />
       </div>
-      <button type='submit'>login</button>
+      <button type='submit'>register</button>
     </form>
   )
 }
 
-export default connect(null, { login })(Login)
+export default connect(null, { registerUser })(Register)

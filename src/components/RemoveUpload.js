@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import datasetsService from '../services/datasets'
 import { connect } from 'react-redux'
+import { removeDataset } from '../reducers/datasetsReducer'
 
-const ManageUploads = ({ datasets }) => {
+const ManageUploads = (props) => {
   const [id, setId] = useState('')
 
   const removeFile = async (event) => {
     event.preventDefault()
     try {
-      await datasetsService.remove(id)
-
+      props.removeDataset(id, props.user)
+      setId('')
     } catch (exception) {
       console.log(exception.response)
     }
@@ -23,7 +23,7 @@ const ManageUploads = ({ datasets }) => {
           onChange={(event) => setId(event.target.value)}
         >
           <option value=''>Select dataset to remove</option>
-          {datasets.map(dataset => (
+          {props.datasets.map(dataset => (
             <option key={dataset.id} value={dataset.id}>
               {dataset.name}
             </option>
@@ -37,8 +37,9 @@ const ManageUploads = ({ datasets }) => {
 
 const mapStateToProps = (state) => {
   return {
-    datasets: state.datasets
+    datasets: state.datasets,
+    user: state.user
   }
 }
 
-export default connect(mapStateToProps)(ManageUploads)
+export default connect(mapStateToProps, { removeDataset })(ManageUploads)

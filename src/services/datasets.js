@@ -12,8 +12,13 @@ const getOne = async (id, fileFormat, config) => {
   return res
 }
 
-const remove = async (id) => {
-  const res = await axios.delete(`${baseUrl}/${id}`)
+const remove = async (id, token) => {
+  const config = {
+    headers: {
+      Authorization: `bearer ${token}`
+    }
+  }
+  const res = await axios.delete(`${baseUrl}/${id}`, config)
   return res.data
 }
 

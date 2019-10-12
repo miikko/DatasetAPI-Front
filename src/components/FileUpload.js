@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import DropZone from './Dropzone'
 import ProgressBar from './ProgressBar'
+import { connect } from 'react-redux'
 import '../stylesheets/FileUpload.css'
 
-const FileUpload = (props) => {
+const FileUpload = ({ user }) => {
   const [uploading, setUploading] = useState(false)
   const [uploadSuccessfull, setUploadSuccessfull] = useState(false)
   const [files, setFiles] = useState([])
@@ -41,7 +42,7 @@ const FileUpload = (props) => {
 
   const sendRequest = (file) => {
     return new Promise((resolve, reject) => {
-     const req = new XMLHttpRequest();
+     const req = new XMLHttpRequest()
    
      req.upload.addEventListener("progress", event => {
       if (event.lengthComputable) {
@@ -49,31 +50,32 @@ const FileUpload = (props) => {
        copy[file.name] = {
         state: "pending",
         percentage: (event.loaded / event.total) * 100
-       };
+       }
        setUploadProgresses(copy)
       }
-     });
+     })
       
      req.upload.addEventListener("load", event => {
       const copy = uploadProgresses
-      copy[file.name] = { state: "done", percentage: 100 };
+      copy[file.name] = { state: "done", percentage: 100 }
       setUploadProgresses(copy)
-      resolve(req.response);
-     });
+      resolve(req.response)
+     })
       
      req.upload.addEventListener("error", event => {
       const copy = uploadProgresses
-      copy[file.name] = { state: "error", percentage: 0 };
+      copy[file.name] = { state: "error", percentage: 0 }
       setUploadProgresses(copy)
-      reject(req.response);
-     });
+      reject(req.response)
+     })
    
-     const formData = new FormData();
-     formData.append("file", file, file.name);
+     const formData = new FormData()
+     formData.append("file", file, file.name)
    
-     req.open("POST", "http://localhost:8000/datasets");
-     req.send(formData);
-    });
+     req.open("POST", "http://localhost:8000/datasets")
+     req.setRequestHeader('Authorization', `bearer ${user.token}`)
+     req.send(formData)
+    })
    }
 
   const uploadFiles = async () => {
@@ -133,4 +135,10 @@ const FileUpload = (props) => {
   )
 }
 
-export default FileUpload
+const mapStateToProps = (state) => {
+  return {
+    user: state.user
+  }
+}
+
+export default connect(mapStateToProps)(FileUpload)
