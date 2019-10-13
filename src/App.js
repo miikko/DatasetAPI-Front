@@ -9,10 +9,12 @@ import { initializeDatasets } from './reducers/datasetsReducer'
 import { initializeUser, logout } from './reducers/userReducer'
 
 const App = (props) => {
+  const initDatasets = props.initializeDatasets
+  const initUser = props.initializeUser
 
   useEffect(() => {
-    props.initializeDatasets()
-    props.initializeUser()
+    initDatasets()
+    initUser()
   }, [])
 
   return (

@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import DropZone from './Dropzone'
 import ProgressBar from './ProgressBar'
 import { connect } from 'react-redux'
+import { addDataset } from '../reducers/datasetsReducer'
 import '../stylesheets/FileUpload.css'
 
-const FileUpload = ({ user }) => {
+const FileUpload = (props) => {
   const [uploading, setUploading] = useState(false)
   const [uploadSuccessfull, setUploadSuccessfull] = useState(false)
   const [files, setFiles] = useState([])
@@ -23,12 +24,12 @@ const FileUpload = ({ user }) => {
             progress={uploadProgress ? uploadProgress.percentage : 0}
           />
           <div>
-          <img
-            className='CheckIcon'
-            alt='done'
-            src='check_circle_outline-24px.svg'
-            style={{ opacity: uploadProgress && uploadProgress.state === 'done' ? 0.5 : 0 }}
-          />
+            <img
+              className='CheckIcon'
+              alt='done'
+              src='check_circle_outline-24px.svg'
+              style={{ opacity: uploadProgress && uploadProgress.state === 'done' ? 0.5 : 0 }}
+            />
           </div>
         </div>
       )
@@ -42,47 +43,53 @@ const FileUpload = ({ user }) => {
 
   const sendRequest = (file) => {
     return new Promise((resolve, reject) => {
-     const req = new XMLHttpRequest()
-   
-     req.upload.addEventListener("progress", event => {
-      if (event.lengthComputable) {
-       const copy = uploadProgresses
-       copy[file.name] = {
-        state: "pending",
-        percentage: (event.loaded / event.total) * 100
-       }
-       setUploadProgresses(copy)
+      const req = new XMLHttpRequest()
+
+      req.upload.addEventListener('progress', event => {
+        if (event.lengthComputable) {
+          const copy = uploadProgresses
+          copy[file.name] = {
+            state: 'pending',
+            percentage: (event.loaded / event.total) * 100
+          }
+          setUploadProgresses(copy)
+        }
+      })
+
+      req.upload.addEventListener('load', event => {
+        const copy = uploadProgresses
+        copy[file.name] = { state: 'done', percentage: 100 }
+        setUploadProgresses(copy)
+        resolve(req.response)
+      })
+
+      req.upload.addEventListener('error', event => {
+        const copy = uploadProgresses
+        copy[file.name] = { state: 'error', percentage: 0 }
+        setUploadProgresses(copy)
+        reject(req.response)
+      })
+
+      req.onreadystatechange = () => {
+        if (req.readyState === 4) {
+          const res = JSON.parse(req.response)
+          res.map(dataset => props.addDataset(dataset))
+        }
       }
-     })
-      
-     req.upload.addEventListener("load", event => {
-      const copy = uploadProgresses
-      copy[file.name] = { state: "done", percentage: 100 }
-      setUploadProgresses(copy)
-      resolve(req.response)
-     })
-      
-     req.upload.addEventListener("error", event => {
-      const copy = uploadProgresses
-      copy[file.name] = { state: "error", percentage: 0 }
-      setUploadProgresses(copy)
-      reject(req.response)
-     })
-   
-     const formData = new FormData()
-     formData.append("file", file, file.name)
-   
-     req.open("POST", "http://localhost:8000/datasets")
-     req.setRequestHeader('Authorization', `bearer ${user.token}`)
-     req.send(formData)
+
+      const formData = new FormData()
+      formData.append('file', file, file.name)
+      req.open('POST', 'http://localhost:8000/datasets')
+      req.setRequestHeader('Authorization', `bearer ${props.user.token}`)
+      req.send(formData)
     })
-   }
+  }
 
   const uploadFiles = async () => {
     setUploadProgresses({})
     setUploading(true)
     const promises = []
-    files.forEach(file => { promises.push(sendRequest(file)) }) 
+    files.forEach(file => { promises.push(sendRequest(file)) })
     try {
       await Promise.all(promises)
     } catch (error) {
@@ -141,4 +148,4 @@ const mapStateToProps = (state) => {
   }
 }
 
-export default connect(mapStateToProps)(FileUpload)
+export default connect(mapStateToProps, { addDataset })(FileUpload)

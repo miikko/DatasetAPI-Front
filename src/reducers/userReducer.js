@@ -47,6 +47,7 @@ export const login = (user) => {
 }
 
 export const logout = () => {
+  window.localStorage.removeItem('loggedUser')
   return {
     type: 'LOGOUT',
     data: null
@@ -56,13 +57,14 @@ export const logout = () => {
 export const registerUser = (user) => {
   return async (dispatch) => {
     try {
-      const newUser = await registerService.register(user)
+      await registerService.register(user)
+      const loggedUser = await loginService.login(user)
       window.localStorage.setItem(
-        'loggedUser', JSON.stringify(newUser)
+        'loggedUser', JSON.stringify(loggedUser)
       )
       dispatch({
         type: 'LOGIN',
-        data: newUser
+        data: loggedUser
       })
     } catch (exception) {
       console.log(exception)

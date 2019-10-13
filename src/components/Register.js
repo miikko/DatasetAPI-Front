@@ -2,14 +2,14 @@ import React, { useState } from 'react'
 import { registerUser } from '../reducers/userReducer'
 import { connect } from 'react-redux'
 
-const Register = ({ registerUser }) => {
+const Register = (props) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const handleRegister = (event) => {
     event.preventDefault()
     const user = { username, password }
-    registerUser(user)
+    props.registerUser(user)
     setUsername('')
     setPassword('')
   }
