@@ -73,7 +73,7 @@ const FileUpload = (props) => {
       req.onreadystatechange = () => {
         if (req.readyState === 4) {
           const res = JSON.parse(req.response)
-          res.map(dataset => props.addDataset(dataset))
+          props.addDataset(res)
         }
       }
 
