@@ -23,13 +23,18 @@ const ManageUploads = (props) => {
           onChange={(event) => setId(event.target.value)}
         >
           <option value=''>Select dataset to remove</option>
-          {props.datasets.map(dataset => (
-            <option key={dataset.id} value={dataset.id}>
-              {dataset.name}
-            </option>
-          ))}
+          {props.datasets.filter(
+            dataset => dataset.user.username === props.user.username)
+            .map(dataset => (
+              <option key={dataset.id} value={dataset.id}>
+                {dataset.name}
+              </option>
+            ))
+          }
         </select>
-        <button type='submit'>Remove dataset</button>
+        <button type='submit' disabled={id === ''}>
+          Remove dataset
+        </button>
       </form>
     </div>
   )

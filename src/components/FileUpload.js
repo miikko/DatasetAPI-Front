@@ -67,13 +67,18 @@ const FileUpload = (props) => {
         const copy = uploadProgresses
         copy[file.name] = { state: 'error', percentage: 0 }
         setUploadProgresses(copy)
+        console.log('Something went wrong with the file upload')
         reject(req.response)
       })
 
       req.onreadystatechange = () => {
         if (req.readyState === 4) {
-          const res = JSON.parse(req.response)
-          props.addDataset(res)
+          if (req.status === 200) {
+            const res = JSON.parse(req.response)
+            props.addDataset(res)
+          } else {
+            console.log("File was uploaded succesfully, but something else went wrong")
+          }
         }
       }
 

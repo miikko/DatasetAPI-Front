@@ -47,7 +47,9 @@ const FileDownload = ({ datasets }) => {
           <option value='csv'>.csv file</option>
           <option value='json'>.json file</option>
         </select>
-        <button type='submit'>Download</button>
+        <button type='submit' disabled={fileFormat === '' || id === ''}>
+          Download
+        </button>
       </form>
       
     </div>

@@ -15,6 +15,7 @@ const App = (props) => {
   useEffect(() => {
     initDatasets()
     initUser()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
