@@ -73,7 +73,7 @@ const FileUpload = (props) => {
 
       req.onreadystatechange = () => {
         if (req.readyState === 4) {
-          if (req.status === 200) {
+          if (req.status >= 200 && req.status < 300) {
             const res = JSON.parse(req.response)
             props.addDataset(res)
           } else {
