@@ -123,7 +123,6 @@ const FileUpload = (props) => {
 
   return (
     <div className='Upload'>
-      <span className='Title'>Upload Files</span>
       <div className='Content'>
         <div>
           <DropZone

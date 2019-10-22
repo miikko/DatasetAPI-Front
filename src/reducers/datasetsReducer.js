@@ -34,6 +34,16 @@ export const removeDataset = (id, user) => {
       })
     } catch (exception) {
       console.log(exception)
+      /*
+      dispatch({
+        type: 'SHOW_NOTIFICATION',
+        data: { message: exception }
+      })
+      await new Promise((resolve, reject) => setTimeout(resolve(), 2000))
+      dispatch({
+        type: 'HIDE_NOTIFICATION',
+        data: {}
+      })*/
     }
   }
 }

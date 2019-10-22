@@ -67,7 +67,7 @@ export const registerUser = (user) => {
         data: loggedUser
       })
     } catch (exception) {
-      console.log(exception)
+      console.log(exception.response || exception)
     }
   }
 }

@@ -20,25 +20,43 @@ const App = (props) => {
 
   return (
     <div className='App'>
+      <div style={{ textAlign: 'center' }}>
+        <h1>Dataset API Client</h1>
+      </div>
       {props.user
         ? 
         <div>
-          <div>
+          <div style={{ float: 'right' }}>
             <h3>Signed in as {props.user.username}</h3>
             <button onClick={(event) => props.logout()}>sign out</button>
           </div>
           <div className='Card'>
-            <FileUpload />
-            <FileDownload />
-            <RemoveUpload />
+            <div>
+              <h2>Upload dataset files</h2>
+              <FileUpload />
+            </div>
+            <div>
+              <h2>Remove uploaded datasets</h2>
+              <RemoveUpload />
+            </div>
           </div>
         </div>
         :
         <div>
-          <Login />
-          <Register />
+          <h2>Authenicate</h2>
+          <p>Creating an account lets you upload dataset files</p>
+          <div>
+            <Login />
+          </div>
+          <div style={{ marginTop: '20px' }}>
+            <Register />
+          </div>
         </div>
       }
+      <div style={{ marginTop: '20px' }}>
+        <h2>Download dataset files</h2>
+        <FileDownload />
+      </div>
     </div>
   )
 }
