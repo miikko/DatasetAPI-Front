@@ -1,6 +1,6 @@
 # Dataset API Client
 
-## About (In progress)
+## About
 
  * A simple web-client that provides an interface for the matching server.
  * Users can register an account which is required for uploading dataset files.
